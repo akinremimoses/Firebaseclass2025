@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-5 shadow-sm m-auto">
+            <input type="email" class="form-control my-2" id="userEmail" placeholder="Email">
+            <input type="password" class="form-control" placeholder="Password" id="userPassword">
+            <button class="btn btn-primary w-100 my-2" id="signInGoogle">Sign up with Google</button>
+            <button class="btn btn-primary w-100 my-2" id="signInPassword">Sign up with Password</button>
+            <button class="btn btn-primary w-100 my-2" id="signInEmail">Sign up with Gmail</button>
+            <!-- <button class="btn btn-primary w-100">Sign in with Gmail</button> -->
+            <button class="btn btn-primary w-100 my-2" id="login">Login</button>
+            <div id="myScreen"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWNRCpj0Z2ehKsmPLo-2oL6PhXNZjqn1k",
+            authDomain: "practice-9630a.firebaseapp.com",
+            projectId: "practice-9630a",
+            storageBucket: "practice-9630a.firebasestorage.app",
+            messagingSenderId: "254365370360",
+            appId: "1:254365370360:web:8c4ac98aa8dd9a341d780d"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const provider = new GoogleAuthProvider();
+        const auth = getAuth();
+
+        // const signInGoogle  = () => {
+
+        // }
+        const actionCodeSettings = {
+        // URL you want to redirect back to. The domain (www.example.com) for this
+        // URL must be in the authorized domains list in the Firebase Console.
+        url: "https://practice-9630a.web.app/dashboard.html",
+        // This must be true.
+        handleCodeInApp: true,
+      };
+
+        document.getElementById('signInGoogle').addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log(result);
+                    window.location.href = 'dashboard.html'
+
+                }).catch((error) => {
+                    console.log(error);
+
+                });
+
+        });
+
+        document.getElementById("signInEmail").addEventListener("click", () => {
+        let email = document.getElementById("userEmail").value;
+
+        sendSignInLinkToEmail(auth, email, actionCodeSettings)
+          .then(() => {
+            console.log("Link successfully sent. check your email.");
+            document.getElementById("myScreen").innerHTML =
+              "<p>Link successfully sent. check your email.</p>";
+
+            window.localStorage.setItem("emailForSignIn", email);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
+
+        document.getElementById('signInPassword').addEventListener('click', () => {
+            let email = document.getElementById('userEmail').value
+            let password = document.getElementById('userPassword').value
+
+           
+
+            const auth = getAuth();
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    window.location.href = 'dashboard.html'
+                })
+                .catch((error) => {
+                   console.log(error);
+                   
+                });
+        })
+
+    </script>
+
+    <script>
+        const logIn = () => {
+        window.location.href = 'login.html'
+    }
+    </script>
+</body>
+
+</html>
